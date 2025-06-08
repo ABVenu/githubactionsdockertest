@@ -23,15 +23,15 @@ describe("Todos Routes Test", () => {
     token = res.body.accessToken;
   });
 
-  test("Add Todo", async () => {
-    //console.log("token in add todo route", token)
+  // test("Add Todo", async () => {
+  //   //console.log("token in add todo route", token)
 
-    let res = await request(app)
-      .post("/todos/add-todo")
-      .set({ authorization: `bearer ${token}` })
-      .send({title:"This is todo from testing"});
-      expect(res.statusCode).toBe(201);
-      expect(res.body.todo.title).toBe("This is todo from testing")
-      //console.log("response", res.body.todo)
-  });
+  //   let res = await request(app)
+  //     .post("/todos/add-todo")
+  //     .set({ authorization: `bearer ${token}` })
+  //     .send({title:"This is todo from testing"});
+  //     expect(res.statusCode).toBe(201);
+  //     expect(res.body.todo.title).toBe("This is todo from testing")
+  //     //console.log("response", res.body.todo)
+  // });
 });

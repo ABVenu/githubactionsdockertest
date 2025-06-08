@@ -7,6 +7,7 @@ const TodoRouter = express.Router();
 const PDFDocument = require("pdfkit");
 const fs = require("fs");
 const nodemailer = require("nodemailer");
+const redis = require("../configs/redis.config");
 
 /// Routes will decided role to be allowed
 

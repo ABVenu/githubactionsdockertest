@@ -40,3 +40,10 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
+
+ # --- Docker Integration Starts Here ---
+    - name: Build Docker image
+    - run: docker build -t abvenu/first-docker-project .
+
+    - name: Run Docker container
+    - run: docker run -d -p 3000:3000 --name abvenu/first-docker-project

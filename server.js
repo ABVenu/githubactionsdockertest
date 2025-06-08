@@ -10,7 +10,6 @@ const TodoRouter = require("./routes/todo.routes");
 const redis = require("./configs/redis.config");
 
 // console.log("MONGO PATH", process.env.MONGO_URI);
-const PORT = process.env.PORT || 3000;
 connectToDB();
 
 const swaggerUi = require('swagger-ui-express');
@@ -69,9 +68,7 @@ app.get("/login", (req, res) => {
   res.send("Please Login Again....");
 });
 
-// app.listen(PORT, () => {
-//   console.log(`Server started and ruuning on ${PORT} port`);
-// });
+
 
 /// Listen to be commeneted for testing
 module.exports = app;

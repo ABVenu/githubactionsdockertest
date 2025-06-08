@@ -121,28 +121,28 @@ TodoRouter.get(
       // Uses Key Value,
       // Key should be used? allTodos??
       let userId = req.user;
-      //let cachedData = await redis.get(userId);
-      //console.log("cachedData", cachedData)
+      let cachedData = await redis.get(userId);
+      console.log("cachedData", cachedData)
 
-      // if (!cachedData) {
-      //   /// data is not stored in Redis
-      //   // get Data from DB and store in Redis and give the response
-      //   let todos = await TodoModel.find({ userId: req.user });
-      //   // storing in redis, stringify the data before storing
-      //   //redis.set(userId, JSON.stringify(todos), "EX", 300);
-      //   res.status(200).json({ message: "Todos List From DB", todos });
-      // } else {
-      //   // Data is present in the Redis, send this as respsonse
-      //   let todos = JSON.parse(cachedData);
-      //   res
-      //     .status(200)
-      //     .json({ message: "Todos List From Redis-Caching", todos });
-      // }
-      // let todos = JSON.parse(cachedData);
-      let todos = await TodoModel.find({ userId: req.user });
+      if (!cachedData) {
+        /// data is not stored in Redis
+        // get Data from DB and store in Redis and give the response
+        let todos = await TodoModel.find({ userId: req.user });
+        // storing in redis, stringify the data before storing
+        //redis.set(userId, JSON.stringify(todos), "EX", 300);
+        res.status(200).json({ message: "Todos List From DB", todos });
+      } else {
+        // Data is present in the Redis, send this as respsonse
+        let todos = JSON.parse(cachedData);
         res
           .status(200)
           .json({ message: "Todos List From Redis-Caching", todos });
+      }
+      // let todos = JSON.parse(cachedData);
+      // let todos = await TodoModel.find({ userId: req.user });
+      //   res
+      //     .status(200)
+      //     .json({ message: "Todos List From Redis-Caching", todos });
     } catch (err) {
       res.status(500).json({ message: "Something went wrong" });
     }
@@ -180,67 +180,67 @@ TodoRouter.post(
   }
 );
 
-// run a cron which pushes Todos into DB and sends Mail
-// cron.schedule("*/10 * * * * *", async () => {
-//   let todos = await redis.get("BulTodoUpdate");
-//   if (todos) {
-//     todos = JSON.parse(todos);
-//     let userId = todos[todos.length - 1]; // last element in todos array
-//     todos.pop();
-//     let passedTodo = 0;
-//     let failedTodo = 0;
-//     for (let todo of todos) {
-//       try {
-//         await TodoModel.create({ ...todo, userId });
-//         passedTodo++;
-//       } catch (err) {
-//         failedTodo++;
-//       }
-//     }
+///run a cron which pushes Todos into DB and sends Mail
+cron.schedule("*/10 * * * * *", async () => {
+  let todos = await redis.get("BulTodoUpdate");
+  if (todos) {
+    todos = JSON.parse(todos);
+    let userId = todos[todos.length - 1]; // last element in todos array
+    todos.pop();
+    let passedTodo = 0;
+    let failedTodo = 0;
+    for (let todo of todos) {
+      try {
+        await TodoModel.create({ ...todo, userId });
+        passedTodo++;
+      } catch (err) {
+        failedTodo++;
+      }
+    }
 
-//     let report = `Bulk Todo Update Report:
-//   Task Inititated By: ${userId}
-//   Passed Todos are: ${passedTodo}
-//   Failed Todos are: ${failedTodo}`;
+    let report = `Bulk Todo Update Report:
+  Task Inititated By: ${userId}
+  Passed Todos are: ${passedTodo}
+  Failed Todos are: ${failedTodo}`;
 
-//     console.log(report);
-//     /// Generating Report
-//     const doc = new PDFDocument();
-//     doc.pipe(fs.createWriteStream(`./reports/${userId}.pdf`));
-//     doc.fontSize(25).text(report, 100, 100);
-//     doc.end();
+    console.log(report);
+    /// Generating Report
+    const doc = new PDFDocument();
+    doc.pipe(fs.createWriteStream(`./reports/${userId}.pdf`));
+    doc.fontSize(25).text(report, 100, 100);
+    doc.end();
 
-//     redis.del("BulTodoUpdate");
-//     // once pdf genrated, send the pdf to the user's email
+    redis.del("BulTodoUpdate");
+    // once pdf genrated, send the pdf to the user's email
 
-//     const transporter = nodemailer.createTransport({
-//       host: "smtp.gmail.com", /// Simple Mail Transport Protocol
-//       port: 587,
-//       secure: false, // true for 465, false for other ports
-//       auth: {
-//         /// We cannot directly use Google email and password
-//         /// Google has security policy
-//         /// Create An App in Google Account, use that app's password
-//         user: process.env.GOOGLE_APP_EMAIL,
-//         pass: process.env.GOOGLE_APP_PASSWORD,
-//       },
-//     });
-//     const info = await transporter.sendMail({
-//       from: '"Venugopal Burli" <venugopal@gmail.com>',
-//       to: "venugopal.burli@masaischool.com",
-//       subject: "This is test email sent",
-//       text: "Bulk Todo Report", // plain‑text body
-//       attachments: [
-//         {
-//           filename: "Report.pdf",
-//           path: `./reports/${userId}.pdf`,
-//         },
-//       ],
-//     });
-//     console.log("Cron finished");
-//   } else {
-//     console.log("No Todos Found To Update Bulk");
-//   }
-// });
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com", /// Simple Mail Transport Protocol
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        /// We cannot directly use Google email and password
+        /// Google has security policy
+        /// Create An App in Google Account, use that app's password
+        user: process.env.GOOGLE_APP_EMAIL,
+        pass: process.env.GOOGLE_APP_PASSWORD,
+      },
+    });
+    const info = await transporter.sendMail({
+      from: '"Venugopal Burli" <venugopal@gmail.com>',
+      to: "venugopal.burli@masaischool.com",
+      subject: "This is test email sent",
+      text: "Bulk Todo Report", // plain‑text body
+      attachments: [
+        {
+          filename: "Report.pdf",
+          path: `./reports/${userId}.pdf`,
+        },
+      ],
+    });
+    console.log("Cron finished");
+  } else {
+    console.log("No Todos Found To Update Bulk");
+  }
+});
 
 module.exports = TodoRouter;

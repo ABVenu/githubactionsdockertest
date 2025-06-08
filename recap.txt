@@ -1,0 +1,158 @@
+// swagger.js
+const swaggerJSDoc = require('swagger-jsdoc');
+
+
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'My API',
+      version: '1.0.0',
+      description: 'API documentation for auth and protected CRUD',
+    },
+    servers: [
+      {
+        url: 'http://localhost:3000',
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
+  },
+  apis: ['./routes/*.js'], // adjust path based on where your routes live
+};
+
+const swaggerSpec = swaggerJSDoc(options);
+
+
+
+module.exports = swaggerSpec;
+
+
+// server.js
+const swaggerSpec = require("./swagger");
+const swaggerUi = require('swagger-ui-express');
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+
+
+//Test
+
+/**
+ * @swagger
+ * /test:
+ *   get:
+ *     summary: Test
+ *     tags: [Test]
+ *     responses:
+ *       200:
+ *         description: This is test route
+ *       500:
+ *         description: Something went wrong
+ */
+
+
+
+ 
+/// Todo
+/**
+ * @swagger
+ * /todos/add-todo:
+ *   post:
+ *     summary: Add a new todo
+ *     tags: [Todos]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 example: "Buy groceries"
+ *               status:
+ *                 type: boolean
+ *                 example: false
+ *     responses:
+ *       201:
+ *         description: Todo added successfully
+ *       500:
+ *         description: Server error
+ */
+
+
+
+ // users
+ 
+/**
+ * @swagger
+ * /users/signup:
+ *   post:
+ *     summary: User signup
+ *     tags: [User]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               role:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Signup successful
+ *       500:
+ *         description: Server error
+ */
+
+
+ /// login
+
+
+ /**
+ * @swagger
+ * /users/login:
+ *   post:
+ *     summary: User Login
+ *     tags: [User]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Login Sucesss
+ *       500:
+ *         description: Server error
+ */

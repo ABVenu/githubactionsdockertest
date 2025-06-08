@@ -7,6 +7,7 @@ const connectToDB = async()=>{
       //console.log(process.env.MONGO_URI)
         console.log("Connected To DB")
     }catch(err){
+        console.log(err)
         console.log("Failed To Connect DB")
     }
 }

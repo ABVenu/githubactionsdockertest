@@ -9,6 +9,17 @@ on:
   pull_request:
     branches: [ "main" ]
 
+env:
+ PORT: ${{secrets.PORT}}
+ MONGO_URI: ${{secrets.MONGO_URI}}
+ JWT_SECRET_KEY:  ${{secrets.JWT_SECRET_KEY}}
+ OAUTH_GITHUB_CLIENT_ID: ${{secrets.OAUTH_GITHUB_CLIENT_ID}}
+ OAUTH_GITHUB_CLIENT_SECRET: ${{secrets.OAUTH_GITHUB_CLIENT_SECRET}}
+ CALLBACK_URL: ${{secrets.CALLBACK_URL}}
+ GOOGLE_APP_PASSWORD: ${{secrets.GOOGLE_APP_PASSWORD}}
+ GOOGLE_APP_EMAIL: ${{secrets.GOOGLE_APP_EMAIL}}
+
+
 jobs:
   build:
 
@@ -16,7 +27,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
+        node-version: [22.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
